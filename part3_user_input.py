@@ -7,13 +7,13 @@ Learn:
 - Using input() to make dynamic API requests
 - Building URLs with f-strings
 - Query parameters in URLs
-"""
+
 
 import requests
 
 
 def get_user_info():
-    """Fetch user info based on user input."""
+    # Fetch user info based on user input.
     print("=== User Information Lookup ===\n")
 
     user_id = input("Enter user ID (1-10): ")
@@ -33,7 +33,7 @@ def get_user_info():
 
 
 def search_posts():
-    """Search posts by user ID."""
+    # Search posts by user ID.
     print("\n=== Post Search ===\n")
 
     user_id = input("Enter user ID to see their posts (1-10): ")
@@ -54,7 +54,7 @@ def search_posts():
 
 
 def get_crypto_price():
-    """Fetch cryptocurrency price based on user input."""
+    # Fetch cryptocurrency price based on user input.
     print("\n=== Cryptocurrency Price Checker ===\n")
 
     print("Available coins: btc-bitcoin, eth-ethereum, doge-dogecoin")
@@ -77,7 +77,7 @@ def get_crypto_price():
 
 
 def main():
-    """Main menu for the program."""
+    # Main menu for the program.
     print("=" * 40)
     print("  Dynamic API Query Demo")
     print("=" * 40)
@@ -106,7 +106,7 @@ def main():
 
 if __name__ == "__main__":
     main()
-
+"""
 
 # --- EXERCISES ---
 #
@@ -114,9 +114,101 @@ if __name__ == "__main__":
 #             Use Open-Meteo API (no key required):
 #             https://api.open-meteo.com/v1/forecast?latitude=28.61&longitude=77.23&current_weather=true
 #             Challenge: Let user input city name (you'll need to find lat/long)
+
+import requests
+# -------------------- INPUT VALIDATION --------------------
+def get_valid_number(prompt):
+    value = input(prompt).strip()
+
+    if value.isdigit():
+        return int(value)
+    else:
+        print("Invalid input! Please enter a number.")
+        return None
+
+
+# -------------------- EXERCISE 1: WEATHER BY CITY --------------------
+def get_weather_by_city():
+    print("\n=== Weather Lookup ===")
+
+    city = input("Enter city (Delhi / Mumbai / Pune): ").lower().strip()
+
+    cities = {
+        "delhi": (28.61, 77.23),
+        "mumbai": (19.07, 72.87),
+        "pune": (18.52, 73.85)
+    }
+
+    if city not in cities:
+        print("City not found!")
+        return
+
+    latitude, longitude = cities[city]
+
+    url = "https://api.open-meteo.com/v1/forecast"
+    params = {
+        "latitude": latitude,
+        "longitude": longitude,
+        "current_weather": True
+    }
+
+    response = requests.get(url, params=params)
+
+    if response.status_code == 200:
+        weather = response.json()["current_weather"]
+        print(f"\nWeather in {city.title()}:")
+        print("Temperature:", weather["temperature"], "°C")
+        print("Wind Speed:", weather["windspeed"], "km/h")
+    else:
+        print("Unable to fetch weather data")
+
 #
 # Exercise 2: Add a function to search todos by completion status
 #             URL: https://jsonplaceholder.typicode.com/todos
 #             Params: completed=true or completed=false
+# -------------------- EXERCISE 2: SEARCH TODOS BY STATUS --------------------
+def search_todos_by_status():
+    print("\n=== Todo Search ===")
+
+    status = input("Enter status (true / false): ").lower().strip()
+
+    if status not in ["true", "false"]:
+        print("Invalid status! Please enter true or false.")
+        return
+
+    url = "https://jsonplaceholder.typicode.com/todos"
+    response = requests.get(url, params={"completed": status})
+
+    if response.status_code == 200:
+        todos = response.json()
+        print(f"\nTotal Todos Found: {len(todos)}")
+
+        for todo in todos[:5]:  # show first 5
+            print("-", todo["title"])
+    else:
+        print("Error fetching todos")
+
 #
 # Exercise 3: Add input validation (check if user_id is a number)
+# -------------------- EXERCISE 3: USER ID VALIDATION --------------------
+def validate_user_id():
+    print("\n=== User ID Validation ===")
+
+    user_id = get_valid_number("Enter user ID (1-10): ")
+
+    if user_id is None:
+        return
+
+    if 1 <= user_id <= 10:
+        print("Valid user ID")
+    else:
+        print("Invalid user ID (must be between 1 and 10)")
+
+
+# -------------------- RUN ALL EXERCISES --------------------
+if __name__ == "__main__":
+    get_weather_by_city()
+    search_todos_by_status()
+    validate_user_id()
+
+# -------------------- END OF EXERCISES --------------------

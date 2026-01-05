@@ -69,7 +69,7 @@ status_codes = {
     401: "Unauthorized - Authentication required",
     403: "Forbidden - Access denied",
     404: "Not Found - Resource doesn't exist",
-    500: "Internal Server Error - Server problem"
+    500: "Internal Server Error - Server problem\n"
 }
 
 for code, meaning in status_codes.items():
@@ -80,12 +80,54 @@ for code, meaning in status_codes.items():
 #
 # Exercise 1: Fetch user with ID 5 and print their phone number
 #             URL: https://jsonplaceholder.typicode.com/users/5
+import requests
+
+url = "https://jsonplaceholder.typicode.com/users/5"
+response = requests.get(url)
+
+print("=== Exercise 1: User Phone ===")
+
+if response.status_code == 200:
+    data = response.json()
+    print("Name:", data["name"])
+    print("Phone:", data["phone"])
+else:
+    print("User not found")
+
 #
 # Exercise 2: Check if a resource exists before printing data
 #             if response.status_code == 200:
 #                 print(data)
 #             else:
 #                 print("Resource not found!")
+
+import requests
+
+url = "https://jsonplaceholder.typicode.com/posts/99999"
+response = requests.get(url)
+
+print("\n=== Exercise 2: Resource Check ===")
+
+if response.status_code == 200:
+    print("Data found:")
+    print(response.json())
+else:
+    print("Resource not found!")
+
 #
 # Exercise 3: Count how many comments are on post ID 1
 #             URL: https://jsonplaceholder.typicode.com/posts/1/comments
+import requests
+
+url = "https://jsonplaceholder.typicode.com/posts/1/comments"
+response = requests.get(url)
+
+print("\n=== Exercise 3: Comment Count ===")
+
+if response.status_code == 200:
+    comments = response.json()
+    print(f"Total comments on post 1: {len(comments)}")
+else:
+    print("Could not fetch comments")
+for comment in comments:
+    print(comment["email"])
